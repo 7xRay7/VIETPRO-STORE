@@ -46,7 +46,9 @@
                                                     class="glyphicon glyphicon-remove"></span></a>
                                         </div> --}}
                                     </div>
+                                    @can('add')
                                     <button type="submit" class="btn btn-primary">Thêm danh mục</button>
+                                    @endcan
                                 </form>
                             </div>
                             <div class="col-md-7">

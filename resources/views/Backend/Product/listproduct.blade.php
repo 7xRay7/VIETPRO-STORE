@@ -34,9 +34,14 @@
 										<svg class="glyph stroked checkmark">
 											<use xlink:href="#stroked-checkmark"></use>
 										</svg>{{ session('success') }}<a href="#" class="pull-right"></a>
-									</div>
-								@endif
+									</div>                           
+                                
+                                @endif
+
+
+                                @can('add')
                                 <a href="{{ route('product.create') }}" class="btn btn-primary">Thêm sản phẩm</a>
+                                @endcan
                                 <!-- Laravel scout + agolia -->
                                 <div style="float: right" class="aa-input-container" id="aa-input-container">
                                     <input type="search" id="aa-search-input" class="aa-input-search"
@@ -56,7 +61,9 @@
                                             <th>Giá sản phẩm</th>
                                             <th>Tình trạng</th>
                                             <th>Danh mục</th>
+                                            @canany(['edit','delete'])
                                             <th width='18%'>Tùy chọn</th>
+                                            @endcanany
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -75,24 +82,31 @@
                                                 </td>
                                                 <td>{{ number_format($item->prd_price, 0, '', '.') }} VND</td>
                                                 <td>
-                                                    <a class="btn btn-success" href="#" role="button">
-                                                        @if ($item->prd_state == 1) Con
-                                                        hang @else Het hang @endif
-                                                    </a>
+                                                    {!!$item->prd_state == 1 ?
+                                                    '<p class="btn btn-success">Còn hàng</p>'
+                                                    :
+                                                    '<p class="btn btn-danger">Hết hàng</p>'
+                                                    !!}
                                                 </td>
                                                 <td>{{ $item->Categories->cat_name }}</td>
                                                 {{-- <td>
                                                     {{ $item->Categories()->first()->cat_name }}
                                                 </td>
                                                 --}}
+                                                @canany(['edit','delete'])
                                                 <td>
+                                                    @can('edit')
                                                     <a href="{{ route('product.edit', ['id' => $item->prd_id]) }}"
                                                         class="btn btn-warning"><i class="fa fa-pencil"
                                                             aria-hidden="true"></i> Sửa</a>
+                                                    @endcan
+                                                    @can('delete')
                                                     <a href="{{ route('product.delete', ['id' => $item->prd_id]) }}"
                                                         class="btn btn-danger"><i class="fa fa-trash"
                                                             aria-hidden="true"></i> Xóa</a>
+                                                    @endcan
                                                 </td>
+                                                @endcanany
                                             </tr>
                                         @endforeach
                                     </tbody>

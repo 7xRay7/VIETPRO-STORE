@@ -31,23 +31,23 @@ Route::group(['prefix' => 'trang-quản-trị', 'namespace' => 'Admin', 'middlew
     Route::group(['prefix' => 'sản-phẩm', 'namespace' => 'Product'], function () {
         Route::get('danh-sách-sản-phẩm', 'ProductController@index')->name('product.index');
         Route::get('danh-sách-sản-phẩm/{id}', 'ProductController@search')->name('product.serch');
-        Route::get('thêm-mới-sản-phẩm.html', 'ProductController@create')->name('product.create');
-        Route::post('thêm-mới-sản-phẩm', 'ProductController@createPOST')->name('product.createPOST');
-        Route::get('chỉnh-sửa-chi-tiết-sản-phẩm/{id}', 'ProductController@edit')->name('product.edit');
+        Route::get('thêm-mới-sản-phẩm.html', 'ProductController@create')->middleware('can:add')->name('product.create');
+        Route::post('thêm-mới-sản-phẩm', 'ProductController@createPOST')->middleware('can:add')->name('product.createPOST');
+        Route::get('chỉnh-sửa-chi-tiết-sản-phẩm/{id}', 'ProductController@edit')->middleware('can:edit')->name('product.edit');
         Route::post('update-san-pham/{id}', 'ProductController@editPost')->name('product.editPost');
-        Route::get('xóa-sản-phẩm/{id}', 'ProductController@delete')->name('product.delete');
+        Route::get('xóa-sản-phẩm/{id}', 'ProductController@delete')->middleware('can:delete')->name('product.delete');
        
     });
     // Category
     Route::group(['prefix' => 'danh-mục', 'namespace' => 'Category'], function () {
         Route::get('danh-sách-danh-mục.html', 'CategoryController@index')->name('category.index');
-        Route::post('danh-sách-danh-mục-create.html', 'CategoryController@create')->name('category.create');
-        Route::get('chỉnh-sửa-danh-mục/{id}', 'CategoryController@edit')->name('category.edit');
-        Route::post('chỉnh-sửa-danh-mục-post/{id}', 'CategoryController@editPost')->name('category.editPOST');
-        Route::get('xóa-danh-mục/{id}', 'CategoryController@delete')->name('category.delete');
+        Route::post('danh-sách-danh-mục-create.html', 'CategoryController@create')->middleware('can:add')->name('category.create');
+        Route::get('chỉnh-sửa-danh-mục/{id}', 'CategoryController@edit')->middleware('can:edit')->name('category.edit');
+        Route::post('chỉnh-sửa-danh-mục-post/{id}', 'CategoryController@editPost')->middleware('can:edit')->name('category.editPOST');
+        Route::get('xóa-danh-mục/{id}', 'CategoryController@delete')->middleware('can:delete')->name('category.delete');
     });
     // Users
-    Route::group(['prefix' => 'quản-trị-viên', 'namespace' => 'User'], function () {
+    Route::group(['prefix' => 'quản-trị-viên', 'namespace' => 'User', 'middleware'=>['role:super-admin']], function () {
         Route::get('', 'UserController@index')->name('user.index');
         //chuyển đến trang thông tin thành viên từ navibar
         route::get('/thông-tin-thành-viên/{id}','UserController@info')->name('user.info');
@@ -60,6 +60,8 @@ Route::group(['prefix' => 'trang-quản-trị', 'namespace' => 'Admin', 'middlew
         Route::post('update/{id}', 'UserController@editpost')->name('user.edit_post');
         Route::get('xóa-quản-trị/{id}', 'UserController@delete')->name('user.delete');
         Route::get('users/export/', 'UserController@export_fromview')->name('user.excel');
+        // Route::get('list-user-master', 'UserController@listmaster')->name('user.listmaster');
+        Route::post('assignPermission/{id}', 'UserController@assign_permission')->name('user.assign_permission');
     });
     // Order
     Route::group(['prefix' => 'đơn-hàng', 'namespace' => 'Order'], function () {

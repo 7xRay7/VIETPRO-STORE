@@ -1,4 +1,7 @@
 <?php
+
+use Illuminate\Support\Facades\Auth;
+
 function showError($errors, $name)
 {
     if ($errors->has($name)) {
@@ -85,6 +88,7 @@ function getCategories($array, $parentId, $char, $isParent)
 // Edit 2:00
 function listCategories($mang, $parentId, $char)
 {
+    $user = Auth::user();
     foreach ($mang as $key => $value) {
         $string = '';
         if ($value['cat_parent_id'] == $parentId) {
@@ -93,8 +97,12 @@ function listCategories($mang, $parentId, $char)
             $string .= $char . $value["cat_name"];
             $string .= "</span>";
             $string .= "<div class='category-fix'>";
+            if ($user->hasPermissionTo('edit')) {
             $string .= "<a class='btn-category btn-primary' href='" . route('category.edit', ['id' => $value['cat_id']]) . "'><i class='fa fa-edit'></i></a>";
+            }
+            if ($user->hasPermissionTo('delete')) {
             $string .= "<a class='btn-category btn-danger' href='" . route('category.delete', ['id' => $value['cat_id']]) . "'><i class='fas fa-times'></i></a>";
+            }
             $string .= "</div>";
             $string .= "</div>";
             $new_parent = $value['cat_id'];

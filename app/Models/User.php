@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use Spatie\Permission\Traits\HasRoles;
 // class User extends Model 
 class User extends Authenticatable 
 {
+    use HasRoles;
+    protected $guard_name = 'web';
+
     protected $table='users';
 
     // Nếu không đặt primaryKey, mặc định khóa chính là id, và khi chạy sẽ báo lỗi: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'users.id' in 'where clause' (SQL: select * from `users` where `users`.`id` = 1 limit 1)

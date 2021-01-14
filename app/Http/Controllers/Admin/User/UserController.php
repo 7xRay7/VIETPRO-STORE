@@ -17,7 +17,9 @@ use App\Exports\UsersExport_FromView;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
-
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use \Illuminate\Support\Collection;
 
 class UserController extends Controller
 {
@@ -29,7 +31,7 @@ class UserController extends Controller
         // ORM
         $users=User::all();
         // $users = User::paginate(12); 
-        return view('Backend.User.listuser', compact('users'));
+        return view('Backend.User.listMasterUser', compact('users'));
     }
     function create()
     {
@@ -50,8 +52,8 @@ class UserController extends Controller
         $user->remember_token = $request->user_address;
         $user->provider='';
         $user->provider_id='';
-        
         $user->save();
+
      return redirect()->route('user.index')->with('thong-bao','success');
     }
     function edit($id)
@@ -76,20 +78,26 @@ class UserController extends Controller
         $user=User::find($id);
         $user->user_fullname = $request->user_fullname;
         $user->user_email = $request->user_email;
-        $user->password =$request->user_password;
+        // $user->password =$request->user_password;
         $user->user_phone = $request->user_phone;
         $user->user_level = $request->user_level;
         $user->user_address = $request->user_address;
         $user->remember_token = $request->user_address;
         $user->provider='';
         $user->provider_id='';
+        dd($user);
         $user->save();
         return redirect()->route('user.index')->with('thong-bao-update','success');
     }
+
     function delete($id)
     {
         $user=User::find($id);
+        if($user->hasRole('super-admin')|| $user->user_level =='super-admin'){
+            return redirect()->route('user.index')->with('err','Không được phép xóa');
+        }else{
         $user->delete();
+        }
         // dd($user);
         return redirect()->route('user.index')->with('thong-bao-delete','succsess');
     }
@@ -213,4 +221,28 @@ class UserController extends Controller
         
     }
 
+    // public function listmaster()
+    // {
+    //     $users = User::all();
+    //     return view('Backend.User.listMasterUser', compact('users'));
+    // }
+
+    public function assign_permission(Request $request, $id)
+    {
+        $role = Role::find($id);
+        $user = User::find($id);
+        // $user->removeRole()
+        $user->revokePermissionTo(['edit', 'add', 'delete']);
+        if ($request->add) {
+            $user->givePermissionTo('add');
+        }
+        if ($request->edit) {
+            $user->givePermissionTo('edit');
+        }
+        if ($request->delete) {
+            $user->givePermissionTo('delete');
+        }
+
+        return redirect()->back();
+    }
 }

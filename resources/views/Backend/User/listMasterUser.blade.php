@@ -1,5 +1,5 @@
 @extends('Backend.Master.master')
-@section('title', 'Danh sách quản trị viên')
+@section('title', 'Danh sách thành viên')
 @section('user_list')
     <!--main-->
     <div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
@@ -57,6 +57,14 @@
                                                 class="glyphicon glyphicon-remove"></span></a>
                                     </div>
                                 @endif
+                                @if(session('err'))
+                                    <div class="alert bg-danger" role="alert">
+                                            <svg class="glyph stroked cancel">
+                                                <use xlink:href="#stroked-cancel"></use>
+                                            </svg>Level: Supper Admin - không được tự phép xóa<a href="#" class="pull-right"><span
+                                                    class="glyphicon glyphicon-remove"></span></a>
+                                        </div>
+                                @endif
                                 <a href="{{ route('user.create') }}" class="btn btn-primary">Thêm Thành viên</a>
                                 <table class="table table-bordered" style="margin-top:20px;">
 
@@ -69,13 +77,14 @@
                                             <th>Address</th>
                                             <th>Phone</th>
                                             <th>Level</th>
-                                            <th width='18%'>Tùy chọn</th>
+                                            <th>Phân quyền</th>
+                                            <th width='12%'>Tùy chọn</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($users as $key => $item)
                                             <tr>
-                                                <td>{{ $key+1 }}</td>
+                                                <td>{{$item->user_id}}</td>
                                                 <td>
                                                     {{-- hiển thị avatar --}}
                                                     @if($item -> avatar == null)
@@ -91,20 +100,31 @@
                                                 <td>{{ $item->user_address }}</td>
                                                 <td>{{ $item->user_phone }}</td>
                                                 <td>
-													@if ($item->user_level==0)
+                                                    @if ($item->user_level==0)
                                                         <span style="background: rgb(9, 233, 9)" class="badge badge-success rounded">User</span>
                                                     @elseif($item->user_level==1)
-													    <span style="background: rgb(8, 23, 235)" class="badge badge-primary rounded">Admin</span>
+													<span style="background: rgb(8, 23, 235)" class="badge badge-primary rounded">Admin</span>
                                                     @else
                                                     	<span style="background: rgb(235, 8, 19)" class="badge badge-danger rounded">Super Admin</span>
                                                     @endif
-												</td>
+                                                    
+                                                </td>
+                                                <form action="{{route('user.assign_permission',['id'=>$item->user_id])}}" method='post'>
+                                                    @csrf
+                                                <td>
+                                                                <input type="checkbox" name="add" {{$item->hasPermissionTo('add') ? 'checked' : '' }}><label> Thêm</label><br/>
+                                                                <input type="checkbox" name="edit" {{$item->hasPermissionTo('edit') ? 'checked' : '' }}><label> Sửa</label><br/>
+                                                                <input type="checkbox" name="delete"  {{$item->hasPermissionTo('delete') ? 'checked' : '' }}><label> Xóa</label><br/>
+                                                        
+                                                </td>
                                                 <td>
                                                     <a href="{{route('user.edit', ['id' => $item->user_id])}}" class="btn btn-warning"><i class="fa fa-pencil"
                                                             aria-hidden="true"></i> Sửa</a>
-                                                    <a href="{{route('user.delete',['id'=> $item->user_id])}}" class="btn btn-danger"><i class="fa fa-trash"
+                                                    <a href="{{route('user.delete',['id'=> $item->user_id])}}" class="btn btn-danger"  onclick="return confirm('Xác nhận xóa tài khoản: {{$item->user_email}}');"><i class="fa fa-trash"
                                                             aria-hidden="true"></i> Xóa</a>
+                                                    <button class="btn btn-info" onclick="return confirm('Xác nhận trao quyền');"><i class="fa fa-unlock-alt" aria-hidden="true"></i> Trao quyền</button>
                                                 </td>
+                                                </form>
                                             </tr>
                                         @endforeach
                                     </tbody>

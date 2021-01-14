@@ -13,10 +13,12 @@
         <li><a href="{{route('order.index')}}"><svg class="glyph stroked notepad ">
                     <use xlink:href="#stroked-notepad" /></svg> Đơn hàng</a></li>
         <li role="presentation" class="divider"></li>
+        @hasrole('super-admin')
         <li><a href="{{route('user.index')}}"><svg class="glyph stroked male-user">
-                    <use xlink:href="#stroked-male-user"></use>
-                </svg> Quản lý thành viên</a></li>
-
+            <use xlink:href="#stroked-male-user"></use>
+            </svg> Quản lý & Phân Quyền</a></li>
+        </li>
+        @endhasrole
     </ul>
 
 </div>

@@ -21,10 +21,10 @@ Chỉnh sửa quản trị {{ $user->user_fullname }}
         <div class="row">
             <div class="col-xs-12 col-md-12 col-lg-12">
                 <div class="panel panel-primary">
-                    <div class="panel-heading"><i class="fas fa-user"></i> Sửa thành viên - admin@gmail.com</div>
+                    <div class="panel-heading"><i class="fas fa-user"></i> Sửa thành viên - {{$user->user_fullname}}</div>
                     <div class="panel-body">
                         <div class="row justify-content-center" style="margin-bottom:40px">
-                            <form action="{{ route('user.edit_post', ['id' => $user->user_id]) }}" method="post">
+                            <form action="{{route('user.edit_post',['id'=>$user->user_id])}}" method="post">
                                 @csrf
                                 <div class="col-md-8 col-lg-8 col-lg-offset-2">
                                     <div class="form-group">
@@ -33,15 +33,15 @@ Chỉnh sửa quản trị {{ $user->user_fullname }}
                                             value="{{ $user->user_email }}">
                                     </div>
                                     {!!showError($errors, 'user_email')!!}
-                                    <div class="form-group">
+                                    {{-- <div class="form-group">
                                         <label>password</label>
                                         <input type="text" name="password" class="form-control"
                                             value="{{ $user->password }}">
                                     </div>
-                                    {!!showError($errors, 'password')!!}
+                                    {!!showError($errors, 'password')!!} --}}
                                     <div class="form-group">
                                         <label>Full name</label>
-                                        <input type="full" name="user_fullname" class="form-control"
+                                        <input type="text" name="user_fullname" class="form-control"
                                             value="{{ $user->user_fullname }}">
                                     </div>
                                     {!!showError($errors, 'user_fullname')!!}
@@ -60,10 +60,12 @@ Chỉnh sửa quản trị {{ $user->user_fullname }}
                                     <div class="form-group">
                                         <label>Level</label>
                                         <select name="user_level" class="form-control" value="">
+                                            <option @if ($user->user_level == 0) selected
+                                                @endif value="0" >User</option>
                                             <option @if ($user->user_level == 1) selected
                                                 @endif value="1" >Admin</option>
-                                            <option @if ($user->user_level == 0) selected
-                                                @endif value="0" >Quan tri vien</option>
+                                            <option @if ($user->user_level == 2) selected
+                                                @endif value="2" >Super Admin</option>
                                         </select>
                                     </div>
                                 </div>
@@ -72,7 +74,7 @@ Chỉnh sửa quản trị {{ $user->user_fullname }}
                                     <div class="col-md-8 col-lg-8 col-lg-offset-2 text-right">
 
                                         <button class="btn btn-success" type="submit">Sửa thành viên</button>
-                                        <button class="btn btn-danger" type="reset">Huỷ bỏ</button>
+                                        <a href="{{route('user.index')}}" class="btn btn-danger" type="reset">Huỷ bỏ</a>
                                     </div>
                                 </div>
                             </form>
