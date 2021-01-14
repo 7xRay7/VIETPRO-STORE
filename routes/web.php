@@ -57,7 +57,7 @@ Route::group(['prefix' => 'trang-quản-trị', 'namespace' => 'Admin', 'middlew
         Route::get('thêm-mới-quản-trị.html', 'UserController@create')->name('user.create');
         Route::post('thêm-mới-quản-trị.html', 'UserController@createPost')->name('user.createPost');
         Route::get('chỉnh-sửa-quản-trị/{id}', 'UserController@edit')->name('user.edit');
-        Route::post('update/{id}', 'UserController@editpost')->name('user.edit_post');
+        Route::post('update/{id}', 'UserController@editpost')->name('user.editpost');
         Route::get('xóa-quản-trị/{id}', 'UserController@delete')->name('user.delete');
         Route::get('users/export/', 'UserController@export_fromview')->name('user.excel');
         // Route::get('list-user-master', 'UserController@listmaster')->name('user.listmaster');

@@ -52,6 +52,15 @@ class UserController extends Controller
         $user->remember_token = $request->user_address;
         $user->provider='';
         $user->provider_id='';
+        if ($user->user_level == 0) {
+            $user->assignRole('user');
+        }
+        if ($user->user_level == 1) {
+            $user->assignRole('admin');
+        }
+        if ($user->user_level == 2) {
+            $user->assignRole('supper-admin');
+        }
         $user->save();
 
      return redirect()->route('user.index')->with('thong-bao','success');
@@ -73,7 +82,7 @@ class UserController extends Controller
 
 
     }
-    function editpost(EditUserRequest $request, $id)
+    function editpost(request $request, $id)
     {
         $user=User::find($id);
         $user->user_fullname = $request->user_fullname;
@@ -85,7 +94,6 @@ class UserController extends Controller
         $user->remember_token = $request->user_address;
         $user->provider='';
         $user->provider_id='';
-        dd($user);
         $user->save();
         return redirect()->route('user.index')->with('thong-bao-update','success');
     }
@@ -93,12 +101,17 @@ class UserController extends Controller
     function delete($id)
     {
         $user=User::find($id);
-        if($user->hasRole('super-admin')|| $user->user_level =='super-admin'){
+        if($user->hasRole('super-admin')|| $user->user_level == 2){
             return redirect()->route('user.index')->with('err','Không được phép xóa');
         }else{
         $user->delete();
         }
         // dd($user);
+        $roles = $user->getRoleNames();
+        foreach ($roles as $key => $value) {
+            $user->removeRole($value);
+        }
+        
         return redirect()->route('user.index')->with('thong-bao-delete','succsess');
     }
 
@@ -136,7 +149,6 @@ class UserController extends Controller
         $user->provider='';
         $user->provider_id='';
         $user->save();
-
         dd($user);
     }
     public function useCreate_v1()
@@ -233,6 +245,12 @@ class UserController extends Controller
         $user = User::find($id);
         // $user->removeRole()
         $user->revokePermissionTo(['edit', 'add', 'delete']);
+        if($user->hasAnyRole(['user','admin'])){
+            $roles = $user->getRoleNames();
+            foreach ($roles as $key => $value) {
+                $user->removeRole($value);
+            }
+        }
         if ($request->add) {
             $user->givePermissionTo('add');
         }

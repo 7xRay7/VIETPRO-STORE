@@ -24,7 +24,7 @@ Chỉnh sửa quản trị {{ $user->user_fullname }}
                     <div class="panel-heading"><i class="fas fa-user"></i> Sửa thành viên - {{$user->user_fullname}}</div>
                     <div class="panel-body">
                         <div class="row justify-content-center" style="margin-bottom:40px">
-                            <form action="{{route('user.edit_post',['id'=>$user->user_id])}}" method="post">
+                            <form action="{{route('user.editpost',['id'=>$user->user_id])}}" method="post">
                                 @csrf
                                 <div class="col-md-8 col-lg-8 col-lg-offset-2">
                                     <div class="form-group">
