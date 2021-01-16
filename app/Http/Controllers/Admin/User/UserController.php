@@ -95,6 +95,23 @@ class UserController extends Controller
         $user->provider='';
         $user->provider_id='';
         $user->save();
+        $user->revokePermissionTo(['add','edit','delete']);
+        if ($user->hasAnyRole(['user', 'admin'])) {
+            $roles = $user->getRoleNames();
+            foreach ($roles as $key => $value) {
+                $user->removeRole($value);
+            }
+        }  
+                if ($user->user_level == 0) {
+                    $user->assignRole('user');
+                }
+                elseif ($user->user_level == 1) {
+                    $user->assignRole('admin');
+                }
+                else{
+                    $user->assignRole('supper-admin');
+                }
+
         return redirect()->route('user.index')->with('thong-bao-update','success');
     }
 
@@ -107,10 +124,6 @@ class UserController extends Controller
         $user->delete();
         }
         // dd($user);
-        $roles = $user->getRoleNames();
-        foreach ($roles as $key => $value) {
-            $user->removeRole($value);
-        }
         
         return redirect()->route('user.index')->with('thong-bao-delete','succsess');
     }
@@ -241,7 +254,6 @@ class UserController extends Controller
 
     public function assign_permission(Request $request, $id)
     {
-        $role = Role::find($id);
         $user = User::find($id);
         // $user->removeRole()
         $user->revokePermissionTo(['edit', 'add', 'delete']);

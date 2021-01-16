@@ -72,8 +72,7 @@
                                                 <td>{{ $key + 1 }}</td>
                                                 <td>
                                                     <div class="row">
-                                                        <div class="col-md-3"><img src="img/product/{{ $item->prd_image }}"
-                                                                alt="Áo đẹp" width="100px" class="thumbnail"></div>
+                                                        <div class="col-md-3"><img src="../Backend/img/product/{{ $item->prd_image }}" alt="Áo đẹp" width="100px" class="thumbnail"></div>
                                                         <div class="col-md-9">
                                                             <p><strong>Mã sản phẩm : {{ $item->prd_id }}</strong></p>
                                                             <p>Tên sản phẩm :{{ $item->prd_name }}</p>

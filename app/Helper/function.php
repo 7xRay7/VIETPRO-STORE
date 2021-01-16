@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 function showError($errors, $name)
 {
@@ -97,10 +99,10 @@ function listCategories($mang, $parentId, $char)
             $string .= $char . $value["cat_name"];
             $string .= "</span>";
             $string .= "<div class='category-fix'>";
-            if ($user->hasPermissionTo('edit')) {
+            if ($user->hasPermissionTo('edit') || $user->hasRole('super-admin')) {
             $string .= "<a class='btn-category btn-primary' href='" . route('category.edit', ['id' => $value['cat_id']]) . "'><i class='fa fa-edit'></i></a>";
             }
-            if ($user->hasPermissionTo('delete')) {
+            if ($user->hasPermissionTo('delete')|| $user->hasRole('super-admin')) {
             $string .= "<a class='btn-category btn-danger' href='" . route('category.delete', ['id' => $value['cat_id']]) . "'><i class='fas fa-times'></i></a>";
             }
             $string .= "</div>";

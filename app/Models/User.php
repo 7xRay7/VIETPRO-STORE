@@ -8,6 +8,7 @@ use Spatie\Permission\Traits\HasRoles;
 // class User extends Model 
 class User extends Authenticatable 
 {
+    //Tạo liên kết user_id tới role_id
     use HasRoles;
     protected $guard_name = 'web';
 

@@ -4,6 +4,9 @@ use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 class RolePermissionSeeder extends Seeder
 {
@@ -15,12 +18,12 @@ class RolePermissionSeeder extends Seeder
     public function run()
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
-        // create permissions
+        // Tạo quyền
         Permission::create(['name' => 'add']);
         Permission::create(['name' => 'edit']);
         Permission::create(['name' => 'delete']);
 
-        // create roles and assign existing permissions
+        // Tạo Role(Chức vụ) và gán quyền
         $role1 = Role::create(['name' => 'user']);
         $role1->givePermissionTo('add');
 
@@ -29,8 +32,8 @@ class RolePermissionSeeder extends Seeder
         $role2->givePermissionTo('edit');
 
         $role3 = Role::create(['name' => 'super-admin']);
-        $role3->givePermissionTo('add');
-        $role3->givePermissionTo('edit');
-        $role3->givePermissionTo('delete');
+
+
     }
 }
+
